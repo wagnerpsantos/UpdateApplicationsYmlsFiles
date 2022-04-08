@@ -1,0 +1,127 @@
+env: uat
+log:
+  rootLevel: INFO
+  newRelicAppender:
+    enabled: true
+  requestPayload:
+    level: DEBUG
+    enabled: true
+    maxPayloadLength: "50000"
+swagger:
+  baseUrl: services-uat.bees-platform.dev/api
+  username: pricing
+  password: pricing
+service:
+  timeout: 5000
+  catalinaOpts: -Dspring.jmx.enabled=true -Dserver.tomcat.mbeanregistry.enabled=true -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.rmi.port=1098 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false
+hpa:
+  enabled:
+    api: true
+  pods:
+    averageUtilization: 50
+    minReplicas:
+      api:
+        release: 20
+        analytics: 1
+        canary: 2
+    maxReplicas:
+      api:
+        release: 50
+        analytics: 30
+        canary: 5
+api:
+  server:
+    port: 8080
+    lifecycleTerminateTimeout: 13s
+  newRelic:
+    appName: pricing-engine-uat
+  pods:
+    replicas: 3
+    resources:
+      limits:
+        memory: 1536Mi
+        cpu: 3000m
+      requests:
+        memory: 512Mi
+        cpu: 1000m
+    javaOpts: -Xms512M -Xmx512M
+  security:
+    enabled: false
+  async:
+    corePoolSize: 100
+    maxPoolSize: 200
+    queueCapacity: 500
+  useDefaultVendorId: ar,cl,co,do,ec,mx,pa,pe,py,sv,tz,uy,za
+sidecar:
+  api:
+    enabled: true
+basicAuth:
+  enabled: false
+
+supportedCountries: ar,br,ca,cl,co,do,ec,gb,hn,mx,pa,pe,py,sv,tz,us,uy,za
+
+toggle:
+  configuration:
+    enableJwtValidation: ar,br,ca,cl,co,do,ec,gb,hn,mx,pa,pe,py,sv,tz,us,uy,za
+    enableExtraEmptyDiscount: co,ec,hn,sv
+    enableEnforcementServiceIntegration: br,co,pe
+    enableHackExtraEmpty: co
+    enableSimulationWithoutPaymentMethod: ca
+    enablePriceList: br,mx
+    enableCombos3Pocm: br
+    enableItemServiceCallForPricePerUoM: br
+    enableForceLineItemDiscountStrategyBest: ca,do
+  code:
+    BEESPR14039: true
+    BEESPR13302: true
+    BEESPR7893: true
+    BEESPR12748: true
+    BEESPR15593: true
+client:
+  price:
+    host: http://price-service
+  deal:
+    host: http://deal-service
+  charge:
+    host: http://charge-service
+  account:
+    host: http://account-service
+  enforcement:
+    host: http://enforcement-service
+  item:
+    host: http://item-service
+  combo:
+    host: http://combo-service
+
+feign:
+  httpclient:
+    connectionTimeout: 12000
+    maxConnections: 200
+    maxConnectionsPerRoute: 50
+
+configurations:
+  filteringOptions:
+    maxSkus: 100
+
+abi-authentication:
+  jwt:
+    rules:
+      allowedAppsWithoutAccount: ontap, oncustomer, supplier
+
+defaultVendorId:
+  AR: 52b2e1c5-578a-445e-85c5-d190cba8df2d
+  BR: 7a51f522-c3e3-421b-89d8-290d8eb2eddd
+  CL: b4697d29-5067-46ae-9d6a-4ce21d76b66b
+  CA: 540146c1-64fd-4b7c-a659-cedfc7023068
+  CO: e6929cd6-5e48-47c1-822f-4f9ac749c650
+  DO: 27f60e79-1c0e-47d6-b31c-af787d192c1c
+  EC: fb81bcba-92fc-496c-a789-b4b5af4019f1
+  HN: 060ea43d-4a3d-4e47-b533-579e2f4e7b35
+  MX: 8e09bb5d-fe87-4a30-9817-50578e58c3be
+  PA: c45d6e80-420c-4f57-ae77-2f5847b8ea29
+  PE: bfab19f4-3814-40ec-8b13-e6cd9d306d0b
+  PY: f94cdbd8-37ec-415d-8ac3-3e3df504cc08
+  SV: f3c85b1d-3e89-4df6-91a3-dc490434e025
+  TZ: b63081bd-914d-495e-abff-0237b7944e08
+  UY: 86bee559-89fb-473f-839a-7232e85eab01
+  ZA: 0b9d7773-dca3-4e06-b697-70a7d70c8f5a
